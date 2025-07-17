@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KPRU | อัลบั้มรูปภาพ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet" />
+  <style>
+    html { scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: url('https://www.chromethemer.com/wallpapers/chromebook-wallpapers/images/960/cyberpunk-chromebook-wallpaper.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .overlay {
+      position: fixed;
+      background-color: rgba(0,0,0,0.7);
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .glitch-lines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        #ff00cc 20%,
+        #ff66cc 40%,
+        #ff00cc 60%,
+        transparent 100%);
+      background-size: 200% 100%;
+      animation: lineMove 2s linear infinite;
+      z-index: 5;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes lineMove {
+      0% {background-position: 200% 0;}
+      100% {background-position: -200% 0;}
+    }
+
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      display: flex;
+      justify-content: center;
+      background: rgba(10, 10, 30, 0.7);
+      backdrop-filter: blur(15px);
+      padding: 20px;
+      z-index: 10;
+      box-shadow: 0 0 15px #ff00ccaa;
+      border-radius: 0 0 15px 15px;
+    }
+
+    .navbar a {
+      margin: 0 15px;
+      text-decoration: none;
+      padding: 10px 25px;
+      border-radius: 30px;
+      background-color: rgba(255, 0, 128, 0.3);
+      color: #ff66cc;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      box-shadow:
+        0 0 5px #ff33cc,
+        0 0 10px #ff00cc,
+        0 0 20px #ff00cc;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .navbar a::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,0,204,0.5) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+      z-index: -1;
+    }
+
+    .navbar a:hover::before {
+      transform: translateX(100%);
+    }
+
+    .navbar a:hover {
+      background-color: #ff00cc;
+      color: #fff;
+      box-shadow:
+        0 0 15px #ff66cc,
+        0 0 25px #ff33cc,
+        0 0 35px #ff00cc;
+      transform: translateY(-2px);
+    }
+
+    /* Hover Preview Images */
+    .navbar a .preview {
+      display: none;
+      position: absolute;
+      top: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #ff00ccaa;
+      z-index: 99;
+    }
+
+    .navbar a:hover .preview {
+      display: block;
+    }
+
+    /* Content */
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 100px auto;
+      padding: 40px 20px;
+      background-color: rgba(0, 0, 30, 0.6);
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      color: #ff66cc;
+      margin-bottom: 30px;
+      text-align: center;
+      text-shadow: 0 0 15px #ff33cc;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .gallery img {
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      filter: drop-shadow(0 0 5px #ff00cc);
+    }
+
+    .gallery img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 40px #ff00cc;
+      filter: drop-shadow(0 0 20px #ff66cc);
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="glitch-lines"></div>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="/">
+      หน้าแรก
+      <img class="preview" src="https://source.unsplash.com/400x300/?university" alt="หน้าแรก preview" />
+    </a>
+    <a href="/about">
+      เกี่ยวกับมหาวิทยาลัย
+      <img class="preview" src="https://source.unsplash.com/400x300/?campus" alt="เกี่ยวกับ preview" />
+    </a>
+    <a href="/gallery">
+      อัลบั้มรูปภาพ
+      <img class="preview" src="https://source.unsplash.com/400x300/?gallery" alt="อัลบั้ม preview" />
+    </a>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <h1>อัลบั้มรูปภาพ</h1>
+    <div class="gallery">
+      <img src="https://source.unsplash.com/400x300/?university" alt="university" />
+      <img src="https://source.unsplash.com/400x300/?students" alt="students" />
+      <img src="https://source.unsplash.com/400x300/?campus" alt="campus" />
+      <img src="https://source.unsplash.com/400x300/?education" alt="education" />
+      <img src="https://source.unsplash.com/400x300/?technology" alt="technology" />
+      <img src="https://source.unsplash.com/400x300/?lecture" alt="lecture" />
+    </div>
+  </div>
+</body>
+</html>

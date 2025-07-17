@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ต้นไม้ตรรกะ: [(p → q) ∧ (q → r)] → (p → r)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet" />
+  <style>
+    html { scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: url('https://www.chromethemer.com/wallpapers/chromebook-wallpapers/images/960/cyberpunk-chromebook-wallpaper.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      text-align: center;
+    }
+
+    .overlay {
+      position: fixed;
+      background-color: rgba(0,0,0,0.7);
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .glitch-lines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        #ff00cc 20%,
+        #ff66cc 40%,
+        #ff00cc 60%,
+        transparent 100%);
+      background-size: 200% 100%;
+      animation: lineMove 2s linear infinite;
+      z-index: 5;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes lineMove {
+      0% {background-position: 200% 0;}
+      100% {background-position: -200% 0;}
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin: 100px 0 20px;
+      color: #ff66cc;
+      text-shadow: 0 0 10px #ff00cc, 0 0 20px #ff33cc;
+    }
+
+    canvas {
+      border: 2px solid #ff00ccaa;
+      background-color: rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 20px #ff00cc99;
+      margin: 20px auto;
+      display: block;
+      z-index: 1;
+    }
+
+    table {
+      margin: 40px auto;
+      border-collapse: collapse;
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 0, 204, 0.1);
+      box-shadow: 0 0 15px #ff00cc88;
+    }
+
+    th, td {
+      border: 1px solid #ff99dd;
+      padding: 10px 15px;
+      color: #fff;
+      text-shadow: 0 0 5px #ff33cc;
+    }
+
+    th {
+      background-color: rgba(255, 0, 204, 0.4);
+    }
+
+    #result {
+      margin: 30px;
+      font-size: 1.5rem;
+      color: #ff99dd;
+      text-shadow: 0 0 10px #ff33cc;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="glitch-lines"></div>
+
+  <h1>โครงสร้างต้นไม้ของ [(p → q) ∧ (q → r)] → (p → r)</h1>
+
+  <canvas id="treeCanvas" width="1100" height="700"></canvas>
+
+  <h2 style="margin-top: 60px; color:#ffccff; text-shadow:0 0 10px #ff00cc;">ตารางค่าความจริง</h2>
+  <table>
+    <tr>
+      <th>p</th><th>q</th><th>r</th>
+      <th>p→q</th><th>q→r</th><th>(p→q)∧(q→r)</th><th>p→r</th>
+      <th>[(p→q)∧(q→r)]→(p→r)</th>
+    </tr>
+    <tbody id="truthTable"></tbody>
+  </table>
+
+  <h2 id="result"></h2>
+
+  <script>
+    const canvas = document.getElementById("treeCanvas");
+    const ctx = canvas.getContext("2d");
+
+    ctx.font = "16px Sarabun";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    function drawNode(x, y, label, truth = "", note = "") {
+      const radius = 28;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = truth === "T" ? "#ff66cc" : (truth === "F" ? "#333" : "#fff");
+      ctx.shadowColor = truth === "T" ? "#ff33cc" : "#ff0033";
+      ctx.shadowBlur = 15;
+      ctx.fill();
+      ctx.strokeStyle = "#fff";
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = "#000";
+      ctx.fillText(label, x, y);
+      if (truth) {
+        ctx.fillStyle = "#fff";
+        ctx.fillText(truth, x, y + 32);
+      }
+      if (note) {
+        ctx.fillStyle = "#ccc";
+        ctx.font = "12px Sarabun";
+        ctx.fillText(note, x, y + 50);
+        ctx.font = "16px Sarabun";
+      }
+    }
+
+    function connect(x1, y1, x2, y2) {
+      ctx.beginPath();
+      ctx.moveTo(x1, y1 + 28);
+      ctx.lineTo(x2, y2 - 28);
+      ctx.strokeStyle = "#ff66cc";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    const values = { p: 1, q: 1, r: 0 };
+    const implies = (a, b) => (!a || b) ? 1 : 0;
+
+    const pq = implies(values.p, values.q);
+    const qr = implies(values.q, values.r);
+    const and = pq && qr;
+    const pr = implies(values.p, values.r);
+    const final = implies(and, pr);
+    const T = v => v ? "T" : "F";
+
+    const positions = {
+      root:         { x: 550, y: 60, label: "→", truth: T(final), note: "ผลลัพธ์" },
+      left_and:     { x: 350, y: 160, label: "∧", truth: T(and), note: "สมมุติฐาน" },
+      right_imp:    { x: 750, y: 160, label: "→", truth: T(pr), note: "p→r" },
+      p1:           { x: 250, y: 260, label: "→", truth: T(pq), note: "p→q" },
+      q1:           { x: 450, y: 260, label: "→", truth: T(qr), note: "q→r" },
+      p_leaf:       { x: 200, y: 360, label: "p", truth: T(values.p) },
+      q_leaf1:      { x: 300, y: 360, label: "q", truth: T(values.q) },
+      q_leaf2:      { x: 400, y: 360, label: "q", truth: T(values.q) },
+      r_leaf1:      { x: 500, y: 360, label: "r", truth: T(values.r) },
+      p2:           { x: 700, y: 260, label: "p", truth: T(values.p) },
+      r2:           { x: 800, y: 260, label: "r", truth: T(values.r) },
+    };
+
+    for (let key in positions) {
+      const { x, y, label, truth, note } = positions[key];
+      drawNode(x, y, label, truth, note);
+    }
+
+    connect(positions.root.x, positions.root.y, positions.left_and.x, positions.left_and.y);
+    connect(positions.root.x, positions.root.y, positions.right_imp.x, positions.right_imp.y);
+    connect(positions.left_and.x, positions.left_and.y, positions.p1.x, positions.p1.y);
+    connect(positions.left_and.x, positions.left_and.y, positions.q1.x, positions.q1.y);
+    connect(positions.p1.x, positions.p1.y, positions.p_leaf.x, positions.p_leaf.y);
+    connect(positions.p1.x, positions.p1.y, positions.q_leaf1.x, positions.q_leaf1.y);
+    connect(positions.q1.x, positions.q1.y, positions.q_leaf2.x, positions.q_leaf2.y);
+    connect(positions.q1.x, positions.q1.y, positions.r_leaf1.x, positions.r_leaf1.y);
+    connect(positions.right_imp.x, positions.right_imp.y, positions.p2.x, positions.p2.y);
+    connect(positions.right_imp.x, positions.right_imp.y, positions.r2.x, positions.r2.y);
+
+    const tbody = document.getElementById("truthTable");
+    let isTautology = true;
+
+    for (let p = 1; p >= 0; p--) {
+      for (let q = 1; q >= 0; q--) {
+        for (let r = 1; r >= 0; r--) {
+          const pq = implies(p, q);
+          const qr = implies(q, r);
+          const conj = pq && qr;
+          const pr = implies(p, r);
+          const final = implies(conj, pr);
+
+          const row = document.createElement("tr");
+          [p, q, r, pq, qr, conj, pr, final].forEach(v => {
+            const td = document.createElement("td");
+            td.textContent = v ? "T" : "F";
+            row.appendChild(td);
+          });
+          tbody.appendChild(row);
+
+          if (!final) isTautology = false;
+        }
+      }
+    }
+
+    document.getElementById("result").innerHTML =
+      isTautology
+        ? "✅ ประพจน์นี้เป็น <strong>สัจนิรันดร์</strong> (Tautology)"
+        : "❌ ประพจน์นี้ <strong>ไม่เป็น</strong> สัจนิรันดร์";
+  </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}หน้าแรก{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bootstrap-5.3.7-dist/css/bootstrap.min.css' %}">
+    <style>
+      body {
+            min-height: 100vh;
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .main-container {
+            width: 100%;
+        }
+
+        .navbar-brand img {
+            max-height: 60px;
+            width: auto;
+        }
+
+        /* เพิ่มระยะห่างระหว่าง logo และเมนู */
+        .navbar-brand {
+            margin-right: 2rem;
+        }
+
+        /* ปรับให้เมนูมีระยะห่างเหมาะสม */
+        .navbar-nav .nav-link {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        /* เพิ่มระยะห่างระหว่างเมนูกับเนื้อหา */
+        .content-spacing {
+            margin-top: 2rem;
+            /*เว้นระยะห่างด้านบน 3rem (48px)*/
+            padding-top: 2rem;
+            /*เพิ่ม padding ด้านใน 2rem (32px)*/
+        }
+
+        /* เพิ่มเงาให้ navbar */
+        .navbar {
+            box-shadow: 0 2px 4px rgba(249, 248, 248, 0.025);
+            margin-bottom: 2rem;
+            /*เว้นระยะห่างด้านล่างของ navbar*/
+        }
+
+        /* ปรับ responsive */
+        @media (max-width: 991.98px) {
+            .navbar-brand {
+                margin-right: 1rem;
+            }
+
+            .content-spacing {
+                margin-top: 2rem;
+                padding-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      <img class="img-fluid" src="{% static 'bootstrap-5.3.7-dist/image/logo.png' %}" alt="Logo" width="100" height="60">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">หน้าแรก</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'about' %}">เกี่ยวกับเรา</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'person' %}">ข้อมูลพนักงาน</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'gallery' %}">อัลบั้ม</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'gallery' %}">ติดต่อสอบถาม</a>
+        </li>
+
+        <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="ค้นหา" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">ค้นหา</button>
+                    </form>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+   <div class="container-fluid content-spacing">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+    <script src="{% static 'bootstrap-5.3-7-dist/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>
